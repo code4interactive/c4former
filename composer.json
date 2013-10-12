@@ -1,0 +1,23 @@
+{
+    "name": "code4/c4former",
+    "description": "",
+    "authors": [
+        {
+            "name": "Artur Bartczak",
+            "email": "artur.bartczak@code4.pl"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.0.x"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "Code4\\C4former": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
