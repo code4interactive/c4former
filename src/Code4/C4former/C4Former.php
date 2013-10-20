@@ -1,8 +1,13 @@
 <?php
 namespace Code4\C4former;
 
+use Code4\Platform\Platform;
 use Illuminate\Config\FileLoader;
+use Illuminate\Support\Collection as Col;
 use Illuminate\Support\Facades\Config;
+
+use Underscore\Types\Arrays as Arrays;
+use Underscore\Types\String as Strings;
 
 /**
  *
@@ -14,6 +19,8 @@ class C4Former {
 
     protected $app;
     protected $collection;
+    public $populator;
+    protected $values;
 
     const FIELDSPACE = 'Code4\C4former\Elements\\';
 
@@ -23,6 +30,7 @@ class C4Former {
         $this->collection = new Collection(array());
         $this->collection->setApp($app);
         $this->collection->setForm($this);
+        $this->populator = new Populator();
     }
 
     public function getNewInstance() {
@@ -36,11 +44,9 @@ class C4Former {
     }
 
 
-    public function load($config=false) {
+    public function load($config=null) {
 
-        //Test if config exists
-
-        $config = \Config::get('form.form1');
+        $config = \Config::get($config);
 
         if (is_array($config)) {
 
@@ -51,15 +57,117 @@ class C4Former {
                 if (!array_key_exists('type', $f)) continue;
 
                 $this->addField($f['type'], $f['id'], $f);
+            }
+        }
+        if (!is_array($config))
+            return $this;
+    }
+
+    public function validate($response = array()) {
+
+        $validationRules = array();
+        $attributeNames = array(); //Collected for correct error message
+        $attributeIds = array(); //Collected for identifying field id (for displaying error message)
+
+        //Iteration on elements. If element has validation rules - add them to Laravel validators
+        foreach($this->collection->all() as $item) {
+            $validationRules = $item->validate($validationRules);
+            $attributeNames = $item->attributeName($attributeNames);
+            $attributeIds = $item->attributeId($attributeIds);
+        }
+
+        $validator = \Validator::make(\Input::all(), $validationRules);
+        $validator->setAttributeNames($attributeNames);
+
+        if ($validator->fails())
+        {
+            $messages = $validator->messages();
+
+            foreach($validationRules as $name=>$r) {
+
+                $fieldMessages = '';
+
+                foreach($messages->get($name) as $m) {
+                    $fieldMessages .= $m.'<br/>';
+                }
+
+                if ($fieldMessages != '') {
+                    $response[] = array('id'=>$attributeIds[$name], 'message'=>$fieldMessages);
+                }
 
             }
 
+            \Notification::error("Błąd formularza");
+
+            return \Response::json($response);
+
+        } else {
+
+            return \Response::json(array('success'=>'success'));
+
         }
 
+    }
 
-        if (!is_array($config))
-            return $this;
 
+    public function populate($pop) {
+
+        //$this->values = $pop;
+
+        $this->populator->setValues($pop);
+        //var_dump($this->populator->getValue('opinie'));
+
+
+        //Array / Eloquent
+        //var_dump($this->queryToArray($pop));
+
+    }
+
+    public function setValues($values) {
+        $this->populator->setValues($values);
+    }
+
+    /**
+     * Transforms an array of models into an associative array
+     *
+     * @param  array|object $query The array of results
+     * @param  string       $value The attribute to use as value
+     * @param  string       $key   The attribute to use as key
+     * @return array               A data array
+     */
+    public static function queryToArray($query, $value = null, $key = null)
+    {
+        // Automatically fetch Lang objects for people who store translated options lists
+        // Same of unfetched queries
+        if (!($query instanceof Col)) {
+            if (method_exists($query, 'get')) $query = $query->get();
+            if (!is_array($query)) $query = (array) $query;
+        }
+
+        // Populates the new options
+        foreach ($query as $model) {
+
+            // If it's an array, convert to object
+            if (is_array($model)) $model = (object) $model;
+
+            // Calculate the value
+            if ($value and isset($model->$value)) $modelValue = $model->$value;
+            elseif (method_exists($model, '__toString')) $modelValue = $model->__toString();
+            else $modelValue = null;
+
+            // Calculate the key
+            if ($key and isset($model->$key)) $modelKey = $model->$key;
+            elseif (method_exists($model, 'getKey')) $modelKey = $model->getKey();
+            elseif (isset($model->id)) $modelKey = $model->id;
+            else $modelKey = $modelValue;
+
+            // Skip if no text value found
+            if (!$modelValue) continue;
+
+            $array[$modelKey] = (string) $modelValue;
+        }
+
+        return isset($array) ? $array : $query;
     }
 
 

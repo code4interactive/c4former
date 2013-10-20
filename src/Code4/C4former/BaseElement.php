@@ -8,7 +8,6 @@
 
 namespace Code4\C4former;
 
-
 use Code4\C4former\Elements;
 use Illuminate\Support\Contracts\RenderableInterface;
 
@@ -32,11 +31,16 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
         if (count($config)) $this->load($config);
 
         return $this;
-
     }
 
-    public function load($config){
 
+    /**
+     * Loads parameters / attributes from config file / array to this element
+     * and creates children if config has 'collection' section
+     *
+     * @param $config
+     */
+    public function load($config){
         foreach($config as $field => $value) {
 
             if (property_exists($this, $field)) {
@@ -52,48 +56,92 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
                     $type = array_key_exists("type", $subField) ? $subField['type'] : null;
 
                     if (is_null($id) || is_null($type)) continue;
-
                     if (!$this->form->fieldTypeExists($type)) continue;
-
 
                     $this->collection->addField($type, $id, $subField);
 
-                    /*$fieldClass = C4Former::FIELDSPACE.$type;
-                    $field = new $fieldClass(
-                        $this->app,
-                        $this->form,
-                        $id,
-                        $subField
-                    );
-
-                    $this->collection->add($field);*/
-
-
                 }
-
             }
+        }
+    }
+
+    /**
+     * Populates value of this element to all its children (eg. select => options)
+     */
+    public function populateParentValue() {
+        $value = $this->getValue();
+
+        foreach ($this->collection->all() as $item) {
+
+            $item->setParentValue($value);
+
+        }
+    }
+
+    /**
+     * Quick access method to values stored in populator
+     * @param $value
+     */
+    public function setValue($value) {
+        $this->form->populator->setValue($this->name, $value);
+    }
+
+    /**
+     * Quick access method to values stored in populator
+     */
+    public function getValue() {
+        return $this->form->populator->getValue($this->name);
+    }
+
+    /**
+     * Collects validation rules for this element
+     *
+     * @param $validationRules
+     * @return mixed
+     */
+    public function validate($validationRules) {
+
+        if ($this->validation != null || is_array($this->validation)) {
+
+            $validationRules[$this->name] = $this->validation;
 
         }
 
-    }
+        foreach($this->collection->all() as $item) {
 
-    public function repopulate() {
+            $validationRules = $item->validate($validationRules);
 
+        }
 
-
-    }
-
-
-    public function validate() {
+        return $validationRules;
 
     }
 
+    public function attributeName($attributeNames) {
 
-    public function label($element) {
+        $attributeNames[$this->id] = $this->label;
 
-        return '<label class="col-sm-3 control-label no-padding-right">'.$this->label.'</label>';
+        foreach($this->collection->all() as $item) {
+
+            $attributeNames = $item->attributeName($attributeNames);
+
+        }
+        return $attributeNames;
+    }
+
+    public function attributeId($attributeIds) {
+
+        $attributeIds[$this->name] = $this->id;
+
+        foreach($this->collection->all() as $item) {
+
+            $attributeIds = $item->attributeId($attributeIds);
+
+        }
+        return $attributeIds;
 
     }
+
 
 
 
@@ -166,7 +214,7 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
     }
 
     public function render() {
-        return "<br/>Field type: ".$this->type." <br/>Field Name: ".$this->name."<br/>";
+        //return "<br/>Field type: ".$this->type." <br/>Field Name: ".$this->name."<br/>";
         /*foreach($this->collection->all() as $fields) {
 
             return $fields->render();

@@ -20,6 +20,8 @@ abstract class BaseElementsAttributes   {
     protected $placeholder;
     protected $tooltip;
     protected $value;
+    protected $parentValue;
+    protected $class;
 
     protected $rules;
     protected $message;
@@ -39,8 +41,7 @@ abstract class BaseElementsAttributes   {
 
     public function tooltips() {
 
-        \Log::error('tooltips');
-        if (is_null($this->tooltip)) return array();
+        if (is_null($this->tooltip)) return null;
 
         $attributes = array(
             "data-rel"=>"tooltip",
@@ -52,13 +53,39 @@ abstract class BaseElementsAttributes   {
     }
 
 
+    public function icon($element) {
+
+        if (is_null($this->icon)) return $element;
+
+        $position = $this->iconposition == "right" ? 'input-icon-right' : '';
+
+        return '<span class="input-icon '.$position.'">
+                    '.$element.'
+                    <i class="'.$this->icon.' blue"></i>
+                </span>';
+
+    }
+
+
+    public function label() {
+        return '<label class="col-sm-3 control-label no-padding-right" for="'.$this->id.'">'.$this->label.'</label>';
+    }
+
+
     public function preaddon() {
 
         if (is_null($this->preaddon)) return null;
+        if (substr($this->preaddon, 0, 4) == 'icon') {
 
-        return '<span class="input-group-addon">
+            return '<span class="input-group-addon">
                     <i class="'.$this->preaddon.'"></i>
                 </span>';
+
+        } else {
+
+            return '<span class="input-group-addon">'.$this->preaddon.'</span>';
+
+        }
 
     }
 
@@ -66,9 +93,17 @@ abstract class BaseElementsAttributes   {
 
         if (is_null($this->postaddon)) return null;
 
-        return '<span class="input-group-addon">
+        if (substr($this->postaddon, 0, 4) == 'icon') {
+
+            return '<span class="input-group-addon">
                     <i class="'.$this->postaddon.'"></i>
                 </span>';
+
+        } else {
+
+            return '<span class="input-group-addon">'.$this->postaddon.'</span>';
+
+        }
 
     }
 
@@ -88,5 +123,43 @@ abstract class BaseElementsAttributes   {
 
 
     }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function setLabel($label)
+    {
+        $this->label = $label;
+    }
+
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
+    public function setValidation($validation)
+    {
+        $this->validation = $validation;
+    }
+
+    public function setPlaceholder($placeholder)
+    {
+        $this->placeholder = $placeholder;
+    }
+
+    public function setClass($class)
+    {
+        $this->class = $class;
+    }
+
+    public function setParentValue($parentValue)
+    {
+        $this->parentValue = $parentValue;
+    }
+
+
+
 
 }

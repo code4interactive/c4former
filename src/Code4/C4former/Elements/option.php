@@ -16,10 +16,20 @@ class option extends BaseElement implements ElementInterface {
     protected $type = "option";
 
     public function render() {
+        $this->populateParentValue();
 
-        return "option";
+        $selected = "";
+        if ($this->parentValue != "" && $this->parentValue == $this->getValue()) $selected = 'selected="selected"';
+        return '<option value="'.$this->value.'" '.$selected.'>'.$this->name.'</option>';
 
     }
 
+    public function setValue($value) {
+        $this->value = $value;
+    }
+
+    public function getValue() {
+        return $this->value;
+    }
 
 }

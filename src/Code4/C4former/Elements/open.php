@@ -17,7 +17,7 @@ class open extends BaseElement {
 
     public function render() {
 
-        return '<form class="form-horizontal" role="form">';
+        return '<form class="form-horizontal" role="form" method="post" action="/administration/users/add">';
 
     }
 
