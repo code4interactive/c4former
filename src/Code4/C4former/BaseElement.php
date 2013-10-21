@@ -102,19 +102,14 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
     public function validate($validationRules) {
 
         if ($this->validation != null || is_array($this->validation)) {
-
             $validationRules[$this->name] = $this->validation;
-
         }
 
         foreach($this->collection->all() as $item) {
-
             $validationRules = $item->validate($validationRules);
-
         }
 
         return $validationRules;
-
     }
 
     public function attributeName($attributeNames) {

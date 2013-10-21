@@ -26,6 +26,7 @@ abstract class BaseElementsAttributes   {
     protected $rules;
     protected $message;
     protected $validation;
+    protected $action;
 
     protected $readonly;
     protected $mode;
@@ -37,20 +38,6 @@ abstract class BaseElementsAttributes   {
     protected $postaddon;
 
     private $attributes = array();
-
-
-    public function tooltips() {
-
-        if (is_null($this->tooltip)) return null;
-
-        $attributes = array(
-            "data-rel"=>"tooltip",
-            "data-placement"=>"bottom",
-            "data-original-title"=>$this->tooltip
-        );
-
-        return $this->attributesToString($attributes);
-    }
 
 
     public function icon($element) {
@@ -66,9 +53,31 @@ abstract class BaseElementsAttributes   {
 
     }
 
-
+    /**
+     * Generates label and tooltip for field
+     * @return string
+     */
     public function label() {
-        return '<label class="col-sm-3 control-label no-padding-right" for="'.$this->id.'">'.$this->label.'</label>';
+
+        $tooltip = $this->tooltips() ? '<i class="'.\Icons::$bigger_110.' '.\Icons::$color_pink.' '.\Icons::$icon_question_sign .'" '.$this->tooltips().'></i>' : '';
+        return '<label class="col-sm-3 control-label no-padding-right" for="'.$this->id.'">'.$this->label.' '.$tooltip.'</label>';
+
+    }
+
+    /**
+     * Generates tooltip attributes
+     * @return null|string
+     */
+    public function tooltips() {
+
+        if (is_null($this->tooltip)) return null;
+        $attributes = array(
+            "data-rel"=>"tooltip",
+            "data-placement"=>"top",
+            "data-original-title"=>$this->tooltip,
+            "data-container"=>"body"
+        );
+        return $this->attributesToString($attributes);
     }
 
 
@@ -82,17 +91,13 @@ abstract class BaseElementsAttributes   {
                 </span>';
 
         } else {
-
             return '<span class="input-group-addon">'.$this->preaddon.'</span>';
-
         }
-
     }
 
     public function postaddon() {
 
         if (is_null($this->postaddon)) return null;
-
         if (substr($this->postaddon, 0, 4) == 'icon') {
 
             return '<span class="input-group-addon">
@@ -100,11 +105,8 @@ abstract class BaseElementsAttributes   {
                 </span>';
 
         } else {
-
             return '<span class="input-group-addon">'.$this->postaddon.'</span>';
-
         }
-
     }
 
 
@@ -159,7 +161,16 @@ abstract class BaseElementsAttributes   {
         $this->parentValue = $parentValue;
     }
 
+    public function setAction($action)
+    {
+        $this->action = $action;
+    }
 
-
-
+    /**
+     * Allows to set custom attributes for custom fields
+     * @param $attributes
+     */
+    public function setCustom($attributes) {
+        $this->attributes = $attributes;
+    }
 }

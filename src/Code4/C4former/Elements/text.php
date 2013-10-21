@@ -17,7 +17,7 @@ class text extends BaseElement implements ElementInterface {
 
     public function render() {
 
-        $element = '<input type="text" name="'.$this->name.'" id="'.$this->id.'" '.$this->tooltips().' placeholder="'.$this->placeholder.'" class="" value="'.$this->getValue().'">';
+        $element = '<input type="text" name="'.$this->name.'" id="'.$this->id.'" placeholder="'.$this->placeholder.'" class="" value="'.$this->getValue().'">';
 
         $addon = '<div class="form-group">
                     '.$this->label().'

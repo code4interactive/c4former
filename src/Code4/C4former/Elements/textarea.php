@@ -17,7 +17,7 @@ class textarea extends BaseElement implements ElementInterface {
 
     public function render() {
 
-        $element = '<textarea name="'.$this->name.'" id="'.$this->id.'" '.$this->tooltips().' placeholder="'.$this->placeholder.'" class=""></textarea>';
+        $element = '<textarea name="'.$this->name.'" id="'.$this->id.'" '.$this->tooltips().' placeholder="'.$this->placeholder.'" class="">'.$this->getValue().'</textarea>';
 
         $addon = '<div class="form-group">
                     '.$this->label().'

@@ -21,8 +21,11 @@ class C4Former {
     protected $collection;
     public $populator;
     protected $values;
+    protected $valid = false;
+    protected $response;
 
     const FIELDSPACE = 'Code4\C4former\Elements\\';
+    const APPSPACE = 'Form';
 
 
     public function __construct($app) {
@@ -94,22 +97,52 @@ class C4Former {
                 if ($fieldMessages != '') {
                     $response[] = array('id'=>$attributeIds[$name], 'message'=>$fieldMessages);
                 }
-
             }
+        }
 
-            \Notification::error("Błąd formularza");
+        $this->response = $response;
 
-            return \Response::json($response);
+        if (count($response)>0) {
+
+            \Notification::error("Przetwarzany formularz zawiera błędy.");
+            $this->valid = false;
+            return true;
 
         } else {
-
-            return \Response::json(array('success'=>'success'));
+            $this->valid = true;
+            return false;
 
         }
 
     }
 
+    /**
+     * Returns valid info
+     * @return bool
+     */
+    public function isValid() {
+        return $this->valid;
+    }
 
+    /**
+     * Returns json response for notification system
+     * @return mixed
+     */
+    public function response() {
+        return \Response::json($this->response);
+    }
+
+
+    public function throwError($fieldId, $message) {
+        $this->response[] = array("id" => $fieldId, "message"=>$message);
+        $this->valid = false;
+    }
+
+
+    /**
+     * Populates form with values from model
+     * @param $pop
+     */
     public function populate($pop) {
 
         //$this->values = $pop;
