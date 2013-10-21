@@ -56,7 +56,8 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
                     $type = array_key_exists("type", $subField) ? $subField['type'] : null;
 
                     if (is_null($id) || is_null($type)) continue;
-                    if (!$this->form->fieldTypeExists($type)) continue;
+                    //if (!$this->form->fieldTypeExists($type)) continue;
+                    if (!$this->collection->getFieldClass($type)) continue;
 
                     $this->collection->addField($type, $id, $subField);
 
@@ -228,7 +229,8 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
     public function __call($method, $parameters) {
 
 
-        if ($this->form->fieldTypeExists($method)) {
+        //if ($this->form->fieldTypeExists($method)) {
+        if ($this->collection->getFieldClass($method)) {
 
             $fieldType = $method;
 

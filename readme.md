@@ -11,6 +11,40 @@ konfiguracja
 Własne pola
 ----------
 
+Krok 1:
+Utworzyć folder 'platform' w katalogu app.
+W katalogu platform utworzyć ścieżkę: C4former/Elements
+W katalogu umieścić swoje pliki pola z namespace:
+
+```php
+namespace platform\C4former\Elements;
+
+use Code4\C4former\BaseElement;
+use Code4\C4former\ElementInterface;
+
+class testfield extends BaseElement implements ElementInterface {
+    protected $type = "testfield";
+    public function render() {}
+}
+```
+
+Krok 2:
+Dodać do composer.json wpis w autoload:
+
+```php
+"autoload": {
+    "classmap": [
+        ...
+        ...
+        "app/platform"
+    ]
+},
+```
+
+Wykonać composer dump_autoload za każdym razem kiedy utworzy się nowy plik z elementem formularza
+
+Krok 3:
+GOTOWE!! W ten sam sposób można nadpisywać istniejące pola formularza.
 
 
 Field Methods

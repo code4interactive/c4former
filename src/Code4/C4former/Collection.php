@@ -59,9 +59,11 @@ class Collection extends BaseCollection {
 
         }
 
-        if (!$this->form->fieldTypeExists($type)) return null;
+        //if (!$this->form->fieldTypeExists($type)) return null;
 
-        $fieldClass = C4Former::FIELDSPACE.$type;
+
+        $fieldClass = $this->getFieldClass($type);
+        if (!$fieldClass) return null;
         $field = new $fieldClass(
             $this->app,
             $this->form,
@@ -79,6 +81,29 @@ class Collection extends BaseCollection {
 
 
 
+    /**
+     * Check if there is a class for requested field type
+     * @param $fieldType
+     * @return bool
+     */
+    public function fieldTypeExists($fieldType) {
+
+        return class_exists(C4Former::FIELDSPACE.$fieldType);
+
+    }
+
+
+    public function getFieldClass($fieldType) {
+
+        if (class_exists(C4Former::APPSPACE.$fieldType)) {
+           return C4Former::APPSPACE.$fieldType;
+        }
+        if (class_exists(C4Former::FIELDSPACE.$fieldType)) {
+            return C4Former::FIELDSPACE.$fieldType;
+        }
+        return null;
+
+    }
 
 
 

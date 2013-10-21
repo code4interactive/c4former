@@ -25,7 +25,7 @@ class C4Former {
     protected $response;
 
     const FIELDSPACE = 'Code4\C4former\Elements\\';
-    const APPSPACE = 'Form';
+    const APPSPACE = '\platform\\C4former\\Elements\\';
 
 
     public function __construct($app) {
@@ -208,7 +208,7 @@ class C4Former {
 
     public function __call($method, $parameters) {
 
-        if ($this->fieldTypeExists($method)) {
+        if ($this->collection->getFieldClass($method)) {
 
             $fieldType = $method;
 
@@ -243,16 +243,7 @@ class C4Former {
         }
     }
 
-    /**
-     * Check if there is a class for requested field type
-     * @param $fieldType
-     * @return bool
-     */
-    public function fieldTypeExists($fieldType) {
 
-        return class_exists(C4Former::FIELDSPACE.$fieldType);
-
-    }
 
 
     public function render() {
