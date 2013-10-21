@@ -66,7 +66,8 @@ class C4Former {
             return $this;
     }
 
-    public function validate($response = array()) {
+    public function validate() {
+        $response = $this->response;
 
         $validationRules = array();
         $attributeNames = array(); //Collected for correct error message
