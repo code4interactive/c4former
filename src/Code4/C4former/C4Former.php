@@ -9,12 +9,6 @@ use Illuminate\Support\Facades\Config;
 use Underscore\Types\Arrays as Arrays;
 use Underscore\Types\String as Strings;
 
-/**
- *
- *
- *
- */
-
 class C4Former {
 
     protected $app;
@@ -145,16 +139,7 @@ class C4Former {
      * @param $pop
      */
     public function populate($pop) {
-
-        //$this->values = $pop;
-
         $this->populator->setValues($pop);
-        //var_dump($this->populator->getValue('opinie'));
-
-
-        //Array / Eloquent
-        //var_dump($this->queryToArray($pop));
-
     }
 
     public function setValues($values) {
@@ -200,7 +185,6 @@ class C4Former {
 
             $array[$modelKey] = (string) $modelValue;
         }
-
         return isset($array) ? $array : $query;
     }
 
@@ -221,9 +205,7 @@ class C4Former {
 
                 //Add field if there was none found;
                 return $this->collection->addField($fieldType, $fieldName);
-
             }
-
 
             //If fieldName is an array it must be a config array;
             if (is_array($fieldName)) {
@@ -237,27 +219,51 @@ class C4Former {
 
         //Collection method eg. after, before ...
         if (method_exists($this->collection, $method)) {
-
             return call_user_func_array(array($this->collection, $method), $parameters);
-
         }
     }
 
-
-
-
+    /**
+     * Renders full form
+     */
     public function render() {
-
         foreach($this->collection->all() as $field) {
             echo $field->render();
         }
     }
 
-
-    public function test() {
-
-        //var_dump($this->collection->all());
-
+    /**
+     * Renders form form given field
+     */
+    public function renderFrom($from) {
+        $found = false;
+        foreach($this->collection->all() as $field) {
+            if ($from == $field->getId()) $found = true;
+            if ($found) echo $field->render();
+        }
     }
 
+    /**
+     * Renders form to given field
+     */
+    public function renderTo($to) {
+        $found = false;
+        foreach($this->collection->all() as $field) {
+            if (!$found) echo $field->render();
+            if ($to == $field->getId()) $found = true;
+        }
+    }
+
+    /**
+     * Renders form from - to given field
+     */
+    public function renderFromTo($from, $to) {
+        $foundFrom = false;
+        $foundTo = false;
+        foreach($this->collection->all() as $field) {
+            if ($from == $field->getId()) $foundFrom = true;
+            if ($foundFrom && !$foundTo) echo $field->render();
+            if ($to == $field->getId()) $foundTo = true;
+        }
+    }
 }

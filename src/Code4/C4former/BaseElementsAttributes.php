@@ -37,7 +37,7 @@ abstract class BaseElementsAttributes   {
     protected $preaddon;
     protected $postaddon;
 
-    private $attributes = array();
+    protected $attributes = array();
 
 
     public function icon($element) {
@@ -124,6 +124,16 @@ abstract class BaseElementsAttributes   {
     public function __get($name) {
 
 
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
     public function setName($name)
