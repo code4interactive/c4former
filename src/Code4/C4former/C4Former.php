@@ -60,8 +60,50 @@ class C4Former {
             return $this;
     }
 
-    public function validate() {
+
+    /**
+     * Validates fields.
+     * 
+     * @param  array|string  $fieldsList 
+     * @return bool          Passed?
+     */
+    public function validate($param1=array(), $param2=null) {
         $response = $this->response;
+
+
+
+        $includeArray = array();
+        $excludeArray = array();
+
+        if ($param2==null) {
+            $param2 = $param1;
+        }
+
+        if (!is_array($param2)) {
+            $param2 = array_map('trim',explode(",",$param2));
+        }
+
+        foreach($param2 as $fieldId) {
+
+            //Jeżeli nie jest exclude to domyślnie jest include 
+            $excludeOrInclude = $param1=='exclude'?'exclude':'include';
+
+            //Chyba że ma !
+            if (substr($fieldId, 0, 1) == '!') {
+                $fieldId = substr($fieldId, 1);
+                $excludeOrInclude = 'exclude';
+            }
+
+            if ($excludeOrInclude == 'include') {
+                $includeArray[] = $fieldId;
+            } else {
+                $excludeArray[] = $fieldId;
+            }
+
+        }
+
+
+
 
         $validationRules = array();
         $attributeNames = array(); //Collected for correct error message
@@ -69,9 +111,23 @@ class C4Former {
 
         //Iteration on elements. If element has validation rules - add them to Laravel validators
         foreach($this->collection->all() as $item) {
-            $validationRules = $item->validate($validationRules);
-            $attributeNames = $item->attributeName($attributeNames);
-            $attributeIds = $item->attributeId($attributeIds);
+
+            if (in_array($item->getId(), $excludeArray)) continue;
+
+            if (count($includeArray)) {
+
+                if (in_array($item->getId(), $includeArray)) {
+                    $validationRules = $item->getValidationRules($validationRules);
+                    $attributeNames = $item->attributeName($attributeNames);
+                    $attributeIds = $item->attributeId($attributeIds);
+                }
+
+            } else {
+
+                $validationRules = $item->getValidationRules($validationRules);
+                $attributeNames = $item->attributeName($attributeNames);
+                $attributeIds = $item->attributeId($attributeIds);
+            }
         }
 
         $validator = \Validator::make(\Input::all(), $validationRules);

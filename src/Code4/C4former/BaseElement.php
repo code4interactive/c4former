@@ -100,14 +100,15 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
      * @param $validationRules
      * @return mixed
      */
-    public function validate($validationRules) {
+    public function getValidationRules($validationRules) {
+
 
         if ($this->validation != null || is_array($this->validation)) {
             $validationRules[$this->name] = $this->validation;
         }
 
         foreach($this->collection->all() as $item) {
-            $validationRules = $item->validate($validationRules);
+            $validationRules = $item->getValidationRules($validationRules);
         }
 
         return $validationRules;
@@ -210,6 +211,7 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
     }
 
     public function render() {
+
         //return "<br/>Field type: ".$this->type." <br/>Field Name: ".$this->name."<br/>";
         /*foreach($this->collection->all() as $fields) {
 

@@ -99,6 +99,31 @@ if ($myForm->isValid()) {  }
 
 ```
 
+Nowa metoda Validate pozwala na exludowanie i includowanie pól do walidacji:
+
+```php
+//Walidacja jednego pola:
+$myForm->validate('user');
+
+//Walidacja wielu pól:
+$myForm->validate('user,email,pass');
+$myForm->validate(array('user','email','pass'));
+
+$myForm->validate('include', 'user');
+$myForm->validate('include', 'user,email,pass');
+$myForm->validate('include', array('user','email','pass'));
+
+//Wykluczenie z walidacji
+$myForm->validate('!user');
+$myForm->validate('!user,!email,!pass');
+$myForm->validate(array('!user','!email','!pass'));
+
+$myForm->validate('exclude', 'user');
+$myForm->validate('exclude', 'user,email,pass');
+$myForm->validate('exclude', array('user','email','pass'));
+
+```
+
 
 
 
