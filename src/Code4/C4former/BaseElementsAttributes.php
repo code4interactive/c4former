@@ -121,8 +121,18 @@ abstract class BaseElementsAttributes   {
 
     }
 
-    public function __get($name) {
+    public function getAttribute($attributeName, $default=null){
+        if (isset($this->$attributeName)) {
+            return $attributeName.'="'.$this->$attributeName.'" ';
+        } else {
+            if ($default != null) {
+                return $default;
+            }
+        }
+        return null;
+    }
 
+    public function __get($name) {
 
     }
 

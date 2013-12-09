@@ -98,3 +98,32 @@ if ($myForm->validate()) {
 if ($myForm->isValid()) {  }
 
 ```
+
+
+
+
+Renderowanie
+----------
+
+
+```php
+$myForm = \C4Former::getNewInstance();
+$myForm->load("configName");
+
+//Renderowanie całości:
+$myForm->render();
+
+
+//Renderowanie od początku formularza do elementu:
+$myForm->renderTo('id_pola');
+
+
+//Renderowanie od elementu do końca formularza:
+$myForm->renderFrom('id_pola');
+
+
+//Renderowanie częściowe:
+$myForm->renderFromTo('id_od', 'id_do');
+
+```
+
