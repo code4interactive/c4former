@@ -102,9 +102,6 @@ class C4Former {
 
         }
 
-
-
-
         $validationRules = array();
         $attributeNames = array(); //Collected for correct error message
         $attributeIds = array(); //Collected for identifying field id (for displaying error message)

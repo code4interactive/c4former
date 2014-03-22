@@ -19,16 +19,18 @@ class text extends BaseElement implements ElementInterface {
 
         $element = '<input type="text" name="'.$this->name.'" id="'.$this->id.'" placeholder="'.$this->placeholder.'" class="" '.$this->getAttribute('readonly').' value="'.$this->getValue().'">';
 
-        $addon = '<div class="form-group">
-                    '.$this->label().'
-                    <div class="col-xs-12 col-sm-1 input-group">
-                        '.$this->preaddon().
-                         $this->icon($element)
-                        .$this->postaddon().'
-                    </div>
-                </div>';
+        $section = '<section>
+                        <label class="input">';
 
-        return $addon;
+        $section .= $element;
+
+        if ($this->tooltip) {
+            $section .= '<b class="tooltip tooltip-bottom-right">'.$this->tooltip.'</b>';
+        }
+
+        $section .= '</label></section>';
+
+        return $section;
 
     }
 
@@ -37,3 +39,5 @@ class text extends BaseElement implements ElementInterface {
         return '<input type="text" id="form-field-1" placeholder="'.$this->placeholder.'" class="col-xs-10 col-sm-5">';
     }
 }
+
+

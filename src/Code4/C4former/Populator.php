@@ -4,6 +4,7 @@ namespace Code4\C4former;
 use Underscore\Methods\ArraysMethods as Arrays;
 use Underscore\Methods\StringMethods as String;
 
+
 /**
  * Populates the class with values, and fetches them
  * from various places
