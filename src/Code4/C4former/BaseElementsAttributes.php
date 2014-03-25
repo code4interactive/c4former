@@ -16,7 +16,11 @@ abstract class BaseElementsAttributes   {
     protected $id;
     protected $name;
     protected $type;
-    protected $label;
+
+
+
+
+    /*protected $label;
     protected $placeholder;
     protected $tooltip;
     protected $value;
@@ -35,93 +39,12 @@ abstract class BaseElementsAttributes   {
     protected $iconposition;
 
     protected $preaddon;
-    protected $postaddon;
+    protected $postaddon;*/
 
-    protected $attributes = array();
-
-
-    public function icon($element) {
-
-        if (is_null($this->icon)) return $element;
-
-        $position = $this->iconposition == "right" ? 'input-icon-right' : '';
-
-        return '<span class="input-icon '.$position.'">
-                    '.$element.'
-                    <i class="'.$this->icon.' blue"></i>
-                </span>';
-
-    }
-
-    /**
-     * Generates label and tooltip for field
-     * @return string
-     */
-    public function label() {
-
-        $tooltip = $this->tooltips() ? '<i class="'.\Icons::$bigger_110.' '.\Icons::$color_pink.' '.\Icons::$icon_question_sign .'" '.$this->tooltips().'></i>' : '';
-        return '<label class="col-sm-3 control-label no-padding-right" for="'.$this->id.'">'.$this->label.' '.$tooltip.'</label>';
-
-    }
-
-    /**
-     * Generates tooltip attributes
-     * @return null|string
-     */
-    public function tooltips() {
-
-        if (is_null($this->tooltip)) return null;
-        $attributes = array(
-            "data-rel"=>"tooltip",
-            "data-placement"=>"top",
-            "data-original-title"=>$this->tooltip,
-            "data-container"=>"body"
-        );
-        return $this->attributesToString($attributes);
-    }
+    //protected $attributes = array();
 
 
-    public function preaddon() {
-
-        if (is_null($this->preaddon)) return null;
-        if (substr($this->preaddon, 0, 4) == 'icon') {
-
-            return '<span class="input-group-addon">
-                    <i class="'.$this->preaddon.'"></i>
-                </span>';
-
-        } else {
-            return '<span class="input-group-addon">'.$this->preaddon.'</span>';
-        }
-    }
-
-    public function postaddon() {
-
-        if (is_null($this->postaddon)) return null;
-        if (substr($this->postaddon, 0, 4) == 'icon') {
-
-            return '<span class="input-group-addon">
-                    <i class="'.$this->postaddon.'"></i>
-                </span>';
-
-        } else {
-            return '<span class="input-group-addon">'.$this->postaddon.'</span>';
-        }
-    }
-
-
-    public function attributesToString($attributes) {
-
-        $txt = "";
-
-        foreach($attributes as $key => $value) {
-            $txt .= ' '.$key.' = "'.$value.'" ';
-        }
-        return $txt;
-
-    }
-
-    public function getAttribute($attributeName, $default=null){
+    /*public function getAttribute($attributeName, $default=null){
         if (isset($this->$attributeName)) {
             return $attributeName.'="'.$this->$attributeName.'" ';
         } else {
@@ -130,13 +53,42 @@ abstract class BaseElementsAttributes   {
             }
         }
         return null;
+    }*/
+
+
+    /**
+     * Magic methods for all attributes
+     * @param  [type] $name [description]
+     * @return [type]       [description]
+     */
+    /*public function __get($name) {
+        if (array_key_exists($name, $this->attributes)) {
+            return $this->attributes[$name];
+        }
+        return null;
     }
 
-    public function __get($name) {
+    public function __set($name, $value) {
+        $this->attributes[$name] = $value;
+    }*/
 
-    }
+    /**
+     * Magiczna metoda dla getów i setów attrybutów
+     * Zastępuje wszystkie ręcznie pisane getName, setName itp
+     */
+    /*public function __call($name, $arguments) {
 
-    public function getName()
+        if (substr($name, 0, 3) === 'set') {
+            $attribute = strtolower(substr($name, 3));
+            $this->{$attribute} = $arguments[0];
+        } else if(substr($name, 0, 3) === 'get') {
+            $attribute = strtolower(substr($name, 3));
+            return $this->{$attribute};
+        }
+    }*/
+
+
+    /**public function getName()
     {
         return $this->name;
     }
@@ -184,13 +136,13 @@ abstract class BaseElementsAttributes   {
     public function setAction($action)
     {
         $this->action = $action;
-    }
+    }*/
 
     /**
      * Allows to set custom attributes for custom fields
      * @param $attributes
      */
-    public function setCustom($attributes) {
+    /*public function setCustom($attributes) {
         $this->attributes = $attributes;
-    }
+    }*/
 }

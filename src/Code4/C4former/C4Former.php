@@ -50,7 +50,7 @@ class C4Former {
             foreach ($config as $f) {
 
                 if (!is_array($f)) continue;
-                if (!array_key_exists('id', $f)) continue;
+                if (!array_key_exists('id', $f)) $f['id'] = md5(uniqid(rand(), true));
                 if (!array_key_exists('type', $f)) continue;
 
                 $this->addField($f['type'], $f['id'], $f);

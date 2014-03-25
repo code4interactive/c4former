@@ -19,17 +19,16 @@ class option extends BaseElement implements ElementInterface {
         $this->populateParentValue();
 
         $selected = "";
-        if ($this->parentValue != "" && $this->parentValue == $this->getValue()) $selected = 'selected="selected"';
-        return '<option value="'.$this->value.'" '.$selected.'>'.$this->name.'</option>';
+        if ($this->parentValue != "" && $this->parentValue == $this->attributes->value) $selected = 'selected="selected"';
+        return '<option value="'.$this->attributes->value.'" '.$selected.' >'.$this->name.'</option>';
 
     }
-
-    public function setValue($value) {
-        $this->value = $value;
+    /*public function setValue($value) {
+        $this->attributes->value = $value;
     }
 
     public function getValue() {
-        return $this->value;
-    }
+        return $this->attributes->value;
+    }*/
 
 }

@@ -11,11 +11,11 @@ namespace Code4\C4former\Elements;
 use Code4\C4former\BaseElement;
 use Code4\C4former\ElementInterface;
 
-class button extends BaseElement implements ElementInterface {
+class submit extends BaseElement implements ElementInterface {
 
-    protected $type = "button";
+    protected $type = "submit";
 
     public function render() {
-        return \View::make('c4former::button', array('el'=>$this->attributes));
+        return \View::make('c4former::submit', array('el'=>$this->attributes));
     }
 }

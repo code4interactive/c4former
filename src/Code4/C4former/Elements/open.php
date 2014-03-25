@@ -17,7 +17,7 @@ class open extends BaseElement {
 
     public function render() {
 
-        return '<form class="smart-form" role="form" method="post" action="'.$this->action.'">';
+        return '<form class="smart-form" role="form" method="post" action="'.$this->attributes->action.'">';
 
     }
 

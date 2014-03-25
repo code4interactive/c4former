@@ -11,22 +11,32 @@ namespace Code4\C4former;
 use Code4\C4former\Elements;
 use Illuminate\Support\Contracts\RenderableInterface;
 
-abstract class BaseElement extends BaseElementsAttributes implements RenderableInterface {
+abstract class BaseElement implements RenderableInterface {
 
     protected $collection;
 
     protected $app;
     protected $form;
 
-    public function __construct($app, $form, $id, $config=array()) {
+    protected $id;
+    protected $name;
+    protected $type;
+
+    protected $parentValue;
+
+    public function __construct($app, $form, $id=null, $config=array()) {
 
         $this->collection = new Collection(array());
         $this->collection->setApp($app);
         $this->collection->setForm($form);
 
+        //if ($id===null) $id = md5(uniqid(rand(), true));
+
         $this->app = $app;
         $this->form = $form;
         $this->id = $this->name = $id;
+
+        $this->attributes = new Attributes;
 
         if (count($config)) $this->load($config);
 
@@ -43,9 +53,14 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
     public function load($config){
         foreach($config as $field => $value) {
 
-            if (property_exists($this, $field)) {
-                if ($field != "collection")
-                $this->{$field} = $value;
+            if ($field != "collection") {
+                $this->attributes->{$field} = $value;
+            }
+
+            if ($field == "name") $this->name = $value;
+
+            if ($field == "value") {
+                $this->setValue($value);
             }
 
             if ($field == 'collection' && is_array($value)) {
@@ -62,6 +77,8 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
                     $this->collection->addField($type, $id, $subField);
 
                 }
+
+                $this->populateParentValue();
             }
         }
     }
@@ -74,7 +91,7 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
 
         foreach ($this->collection->all() as $item) {
 
-            $item->setParentValue($value);
+            $item->parentValue = $value;
 
         }
     }
@@ -114,9 +131,10 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
         return $validationRules;
     }
 
+
     public function attributeName($attributeNames) {
 
-        $attributeNames[$this->id] = $this->label;
+        $attributeNames[$this->id] = $this->attributes->label;
 
         foreach($this->collection->all() as $item) {
 
@@ -125,6 +143,7 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
         }
         return $attributeNames;
     }
+
 
     public function attributeId($attributeIds) {
 
@@ -136,15 +155,6 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
 
         }
         return $attributeIds;
-
-    }
-
-
-
-
-    public function setLabel($label) {
-
-        $this->label = new label($label);
 
     }
 
@@ -175,7 +185,6 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
         }
 
         return null;
-
     }
 
     public function findById($id) {
@@ -194,7 +203,6 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
         }
 
         return null;
-
     }
 
 
@@ -210,28 +218,25 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
 
     }
 
+    /**
+     * Metoda która powinna być overridowana przez dziedziczoną klasę
+     * @return string 
+     */
     public function render() {
 
-        //return "<br/>Field type: ".$this->type." <br/>Field Name: ".$this->name."<br/>";
-        /*foreach($this->collection->all() as $fields) {
+        return $this->type . ' - ' . $this->id;
 
-            return $fields->render();
-
-        }*/
     }
 
     public function __toString() {
 
         return $this->render();
-        return "<br/>Field type: ".$this->type." <br/>Field Name: ".$this->name."<br/>";
-        return $this->type." - ".$this->id."<br/>";
-
+        
     }
 
     public function __call($method, $parameters) {
 
-
-        //if ($this->form->fieldTypeExists($method)) {
+        //Jeżeli wywołana metoda odności się do konkretnego typu pola (np text, select itp)
         if ($this->collection->getFieldClass($method)) {
 
             $fieldType = $method;
@@ -248,7 +253,6 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
 
             }
 
-
             //If fieldName is an array it must be a config array;
             if (is_array($fieldName)) {
 
@@ -257,6 +261,11 @@ abstract class BaseElement extends BaseElementsAttributes implements RenderableI
                 if (is_null($name)) return null;
                 return $this->collection->addField($fieldType, $name, $config);
             }
+        } else {
+            //Możliwe że odwołujemy się do atrybutów kożystając z notacji setName, getName
+            //Wysyłamy więc wywołanie do Attributes
+            //return parent::__call($method, $parameters);
+            return call_user_func_array(array($this->attributes, $method), $parameters);
         }
 
         //Collection method eg. after, before ...

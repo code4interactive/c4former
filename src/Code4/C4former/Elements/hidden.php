@@ -17,9 +17,7 @@ class hidden extends BaseElement implements ElementInterface {
 
     public function render() {
 
-        $element = '<input type="hidden" name="'.$this->name.'" id="'.$this->id.'" value="'.$this->getValue().'">';
-
-        return $element;
+        return '<input type="hidden" name="'.$this->attribute->name.'" id="'.$this->id.'" value="'.$this->getValue().'">';
 
     }
 }

@@ -18,7 +18,7 @@ class select extends BaseElement implements ElementInterface {
     protected $multiple;
     //protected $chosen-select;
 
-    public function render() {
+    /*public function render() {
         $this->populateParentValue();
 
         //$element = '<input type="text" name="'.$this->name.'" id="'.$this->id.'" '.$this->tooltips().' placeholder="'.$this->placeholder.'" class="">';
@@ -43,14 +43,18 @@ class select extends BaseElement implements ElementInterface {
 
         return $addon;
 
+    }*/
+
+    public function render() {
+        return \View::make('c4former::select', array(
+            'el'=>$this->attributes, 
+            'value'=>$this->getValue(),
+            'collection'=>array($this->collection->all())
+        ));
     }
 
 
-    public function renderNaked() {
-        return '<input type="text" id="form-field-1" placeholder="'.$this->placeholder.'" class="col-xs-10 col-sm-5">';
-    }
-
-
+    ///?????????
     public function fromQuery($results, $value = null, $key = null)
     {
         $array = C4former::queryToArray($results, $value, $key);
