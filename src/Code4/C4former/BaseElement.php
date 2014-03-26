@@ -24,6 +24,8 @@ abstract class BaseElement implements RenderableInterface {
 
     protected $parentValue;
 
+    protected $validation;
+
     public function __construct($app, $form, $id=null, $config=array()) {
 
         $this->collection = new Collection(array());
@@ -62,6 +64,9 @@ abstract class BaseElement implements RenderableInterface {
             if ($field == "value") {
                 $this->setValue($value);
             }
+
+            if ($field == "validation")
+                $this->validation = $value;
 
             if ($field == 'collection' && is_array($value)) {
 
@@ -232,6 +237,10 @@ abstract class BaseElement implements RenderableInterface {
 
         return $this->render();
         
+    }
+
+    public function getId() {
+        return $this->id;
     }
 
     public function __call($method, $parameters) {

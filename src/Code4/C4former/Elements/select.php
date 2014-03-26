@@ -19,7 +19,6 @@ class select extends BaseElement implements ElementInterface {
     //protected $chosen-select;
 
     /*public function render() {
-        $this->populateParentValue();
 
         //$element = '<input type="text" name="'.$this->name.'" id="'.$this->id.'" '.$this->tooltips().' placeholder="'.$this->placeholder.'" class="">';
 
@@ -46,6 +45,7 @@ class select extends BaseElement implements ElementInterface {
     }*/
 
     public function render() {
+        $this->populateParentValue();
         return \View::make('c4former::select', array(
             'el'=>$this->attributes, 
             'value'=>$this->getValue(),
@@ -60,7 +60,7 @@ class select extends BaseElement implements ElementInterface {
         $array = C4former::queryToArray($results, $value, $key);
 
         foreach($array as $key => $value) {
-            $this->option($key)->setValue($value);
+            $this->option($key)->attributes->value = $value;
         }
 
         return $this;

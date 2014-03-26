@@ -70,8 +70,6 @@ class C4Former {
     public function validate($param1=array(), $param2=null) {
         $response = $this->response;
 
-
-
         $includeArray = array();
         $excludeArray = array();
 
