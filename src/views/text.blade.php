@@ -2,7 +2,7 @@
     <label class="label">{{$el->label}}</label>
     <label class="input {{$el->disabled?'state-disabled':''}}">
     	{{$el->icon()}}
-        <input id="{{$el->id}}" type="text" placeholder="{{$el->placeholder}}" value="{{$value}}" {{$el->disabled()}} {{$el->mask()}} >
+        <input id="{{$el->id}}" name="{{$el->name}}" type="text" placeholder="{{$el->placeholder}}" value="{{$value}}" {{$el->disabled()}} {{$el->mask()}} >
 		{{$el->tooltip()}}
     </label>
     @if ($el->description)
