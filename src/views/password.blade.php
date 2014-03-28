@@ -5,8 +5,7 @@
 
         <input id="{{$el->id}}" name="{{$el->name}}" type="password" placeholder="{{$el->placeholder}}" value="{{$value}}" {{$el->disabled()}} {{$el->mask()}} >
 
-        <input id="{{$el->id}}" type="password" name="{{$el->name}}" placeholder="{{$el->placeholder}}" value="{{$value}}" {{$el->disabled()}} {{$el->mask()}} >
-
+       
 		{{$el->tooltip()}}
     </label>
     @if ($el->description)
