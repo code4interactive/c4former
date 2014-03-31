@@ -20,6 +20,7 @@ class option extends BaseElement implements ElementInterface {
 
         $selected = "";
         if ($this->parentValue != "" && $this->parentValue == $this->attributes->value) $selected = 'selected="selected"';
+         if (is_array($this->parentValue) && in_array($this->attributes->value, $this->parentValue)) $selected = 'selected="selected"';
         return '<option value="'.$this->attributes->value.'" '.$selected.' >'.$this->name.'</option>';
 
     }
