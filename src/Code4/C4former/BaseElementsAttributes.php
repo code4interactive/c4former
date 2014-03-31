@@ -17,9 +17,6 @@ abstract class BaseElementsAttributes   {
     protected $name;
     protected $type;
 
-
-
-
     /*protected $label;
     protected $placeholder;
     protected $tooltip;
